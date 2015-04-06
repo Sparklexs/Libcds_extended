@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 	WaveletMatrix* seq = new WaveletMatrix(*A, bsb, map);
 	cout << seq->rank(12, 20) << endl;
 	cout << seq->rank(1, 0) << endl;
-	seq->range_report_aux(0, 5);
+	seq->range_report_aux(4, 12);
 	//return *ds;
 	//ds->DStest();
 }

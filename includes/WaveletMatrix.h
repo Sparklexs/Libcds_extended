@@ -61,7 +61,7 @@ namespace cds_static
 			uint range(size_t posl,size_t posr,size_t i) const;     
             void mrqq_aux(uint lev,size_t i, size_t j,size_t k, size_t kp,uint sym,size_t start,size_t end,vector < pair<uint,size_t> > result);
 			vector < pair<uint,size_t> > mrqq(size_t i,size_t j, size_t k, size_t kp);
-			void range_report(uint lev, size_t x_start, size_t x_end, uint sym, size_t num,size_t start, size_t end,vector <uint> &result);
+			void range_report(uint lev, size_t x_start, size_t x_end, uint sym, size_t num,vector <uint> &result);
 			vector<uint> range_report_aux(size_t x_start, size_t x_end);
 			void range_intersect(uint lev, size_t x_start, size_t x_end,size_t y_start, size_t y_end,uint sym, size_t start, size_t end);
 			void range_intersect_aux(size_t x_start,size_t x_end, size_t y_start, size_t y_end);

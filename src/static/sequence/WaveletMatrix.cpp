@@ -373,19 +373,14 @@ vector<uint> WaveletMatrix::range_report_aux(size_t x_start, size_t x_end) {
 	vector<uint> result;
 //		result.reserve(1500);
 	size_t num = x_end - x_start + 1;
-	range_report(0, x_start, x_end, 0, num, 0, n - 1, result);
+	range_report(0, x_start, x_end, 0, num, result);
 	return result;
 }
 void WaveletMatrix::range_report(uint lev, size_t x_start, size_t x_end,
-		uint sym, size_t num, size_t start, size_t end, vector<uint> &result) {
+		uint sym, size_t num, vector<uint> &result) {
 	if (num <= 0)
 		return;
 	size_t x_start_left = 0, x_start_right = 0, x_end_left = 0, x_end_right = 0;
-	//start_left,end_left;start_right,end_right实际没有任何作用
-	size_t end_left = 0;
-	size_t end_right = 0;
-	size_t start_left = 0;
-	size_t start_right = 0;
 
 	size_t start_new = 0;
 	size_t end_new = 0;
@@ -400,28 +395,25 @@ void WaveletMatrix::range_report(uint lev, size_t x_start, size_t x_end,
 		}
 
 		end_new = bs->rank1(x_end);
-		size_t num_left = num - end_new;
-		size_t num_right = end_new;
+		size_t num_right = (end_new - start_new);
+		size_t num_left = num - num_right; //有待验证！！！！！！！
+
 		x_end_left = x_end - end_new;
 		// x_end == end_new ? x_end : x_end - end_new + 1;
 
-		start_left = start;
-		end_left = C[lev] - 1;
-
-		if (x_start_left <= x_end_left && x_end_left != 0)
+		if (x_start_left <= x_end_left)
 			range_report(lev + 1, x_start_left, x_end_left, sym, num_left,
-					start_left, end_left, result);
+					result);
 //		sym =  sym | (1<<(height-lev-1));
 		//进入右子树，开始赋值
 		sym = sym | (1 << lev);
 
 		x_start_right = start_new + C[lev];
 		x_end_right = end_new + C[lev] - 1;
-		end_right = n - 1;
-		start_right = C[lev];
+
 		if (x_start_right <= x_end_right)
 			range_report(lev + 1, x_start_right, x_end_right, sym, num_right,
-					start_right, end_right, result);
+					result);
 	} else {
 		if (x_start > x_end)
 			return;
