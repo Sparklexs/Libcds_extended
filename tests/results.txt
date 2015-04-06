@@ -1,0 +1,37 @@
+WVMATRIX (no C):
+fclaude@recoded:tests (master)] $ time ./testSequence 10 1200000 7777
+Test 1 : Wavelet tree with pointers
+bs.size() = 3517512
+Test 2 : Wavelet tree without pointers
+bs.size() = 2351008
+
+real	0m17.586s
+user	0m17.494s
+sys	0m0.063s
+
+
+
+WVTREENOPTRS (no C):
+[fclaude@recoded:tests (master)] $ time ./testSequence 10 1200000 7777
+Test 1 : Wavelet tree with pointers
+bs.size() = 3517512
+Test 2 : Wavelet tree without pointers
+bs.size() = 2350508
+
+real	0m29.714s
+user	0m29.623s
+sys	0m0.063s
+
+
+
+
+WVMATRIX (with C):
+[fclaude@recoded:tests (master)] $ time ./testSequence 10 1200000 7777
+Test 1 : Wavelet tree with pointers
+bs.size() = 3517512
+Test 2 : Wavelet tree without pointers
+bs.size() = 2351008
+
+real	0m15.176s
+user	0m15.095s
+sys	0m0.056s
