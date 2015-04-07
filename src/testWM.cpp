@@ -8,6 +8,10 @@
 #include<Array.h>
 #include <boost/algorithm/string.hpp>
 using namespace cds_static;
+const int NUM = 2;
+
+size_t *mystarts = new size_t[NUM] { 0, 4 /*, 223*/};
+size_t *myends = new size_t[NUM] { 3, 12 /*, 227*/};
 
 int main(int argc, char** argv) {
 	cout << "hello world" << endl;
@@ -75,9 +79,11 @@ int main(int argc, char** argv) {
 //   	BitSequenceBuilder * bsb = new BitSequenceBuilderRRR(50);
 	BitSequenceBuilder * bsb = new BitSequenceBuilderRG(2);
 	WaveletMatrix* seq = new WaveletMatrix(*A, bsb, map);
-	cout << seq->rank(12, 20) << endl;
-	cout << seq->rank(1, 0) << endl;
-	seq->range_report_aux(4, 12);
+
+//	cout << seq->rank(12, 20) << endl;
+//	cout << seq->rank(1, 0) << endl;
+//	seq->range_report_aux(4, 12);
+	seq->n_range_intersect_aux(mystarts, myends, NUM);
 	//return *ds;
 	//ds->DStest();
 }

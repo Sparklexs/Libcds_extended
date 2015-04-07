@@ -258,51 +258,49 @@ static size_t *x_start_right;
 static size_t *x_end_left;
 static size_t *x_end_right;
 
-void WaveletMatrix::n_range_intersect_aux(size_t *x_start, size_t *x_end,
-		size_t n_ranges) {
-
+vector<uint> WaveletMatrix::n_range_intersect_aux(size_t *x_start,
+		size_t *x_end, size_t n_ranges) {
+	vector<uint> result;
 	x_start_left = new size_t[n_ranges * height];
 	x_start_right = new size_t[n_ranges * height];
 	x_end_left = new size_t[n_ranges * height];
 	x_end_right = new size_t[n_ranges * height];
 
-	n_range_intersect(0, x_start, x_end, 0, 0, n - 1, n_ranges, x_start_left,
-			x_start_right, x_end_left, x_end_right);
+	n_range_intersect(0, x_start, x_end, 0, n_ranges, x_start_left,
+			x_start_right, x_end_left, x_end_right, result);
 
 	delete x_start_left; // OJO se escribe asi?
 	delete x_start_right; // OJO se escribe asi?
 	delete x_end_left; // OJO se escribe asi?
 	delete x_end_right; // OJO se escribe asi?
+	return result;
 }
 
 void WaveletMatrix::n_range_intersect(uint lev, size_t * x_start, size_t *x_end,
-		uint sym, size_t start, size_t end, size_t n_ranges,
-		size_t *x_start_left, size_t *x_start_right, size_t *x_end_left,
-		size_t *x_end_right) {
+		uint sym, size_t n_ranges, size_t *x_start_left, size_t *x_start_right,
+		size_t *x_end_left, size_t *x_end_right, vector<uint> result) {
 
-// creo que estos tests estan de mas
-//	// llegamos a una hoja vacia
-//	if (start > end)
-//		return;
-//	// nos fuimos a la cresta
-//	if (end > n-1)
-//		return;
-//
-//	// revisamos que ningun rango se haya hecho vacio
-//	for (size_t i = 0 ; i < n_ranges;i++)
-//	{
-//		if (x_start[i] >  x_end[i])
-//			return;
-//	}
+	// creo que estos tests estan de mas
+	//	// llegamos a una hoja vacia
+	//	if (start > end)
+	//		return;
+	//	// nos fuimos a la cresta
+	//	if (end > n-1)
+	//		return;
+	//
+	//	// revisamos que ningun rango se haya hecho vacio
+	//	for (size_t i = 0 ; i < n_ranges;i++)
+	//	{
+	//		if (x_start[i] >  x_end[i])
+	//			return;
+	//	}
 
 	// si aun no hemos llegado a la hoja
+	//删去多余注释，除去无效传入参数，加入左右子树数量标识
 	if (lev < height) {
 
 		// construimos los arreglos para mantener los rangos
-		size_t end_left;
-		size_t end_right;
-		size_t start_left;
-		size_t start_right;
+
 		size_t start_new = 0;
 		size_t end_new;
 
@@ -315,15 +313,20 @@ void WaveletMatrix::n_range_intersect(uint lev, size_t * x_start, size_t *x_end,
 			start_new = x_start[i];
 			if (x_start[i] > 0) {
 				start_new = bs->rank1(start_new - 1);
-				x_start_left[i] = x_start[i] - start_new + 1;
+				x_start_left[i] = x_start[i] - start_new /*+ 1*/;
+				//XXX 有必要+1吗？
 			} else
 				x_start_left[i] = 0;
 
 			end_new = bs->rank1(x_end[i]);
 			if (liveleft) {
-				x_end_left[i] = x_end[i] - end_new + 1;
-				if (x_end_left[i] < x_start_left[i]) {
+				x_end_left[i] = x_end[i] - end_new /*+ 1*/;
+//				cout << "start_left:" << i << " " << x_start_left[i] << endl;
+//				cout << "end_left:" << i << " " << x_end_left[i] << endl;
+				//XXX 有必要+1吗？
+				if (x_end_left[i] < x_start_left[i] || x_end[i] < end_new) {
 					if (!liveright)
+						//现在已经没有左子树了，右子树如果也没有
 						return;
 					liveleft = 0;
 				}
@@ -331,6 +334,9 @@ void WaveletMatrix::n_range_intersect(uint lev, size_t * x_start, size_t *x_end,
 			if (liveright) {
 				x_start_right[i] = start_new + C[lev];
 				x_end_right[i] = end_new + C[lev] - 1;
+//				cout << "start_right:" << i << " " << x_start_right[i] << endl;
+//				cout << "end_right:" << i << " " << x_end_right[i] << endl;
+				//end_new和C都是个数，表示序列得-1
 
 				if (x_end_right[i] < x_start_right[i]) {
 					if (!liveleft)
@@ -344,28 +350,27 @@ void WaveletMatrix::n_range_intersect(uint lev, size_t * x_start, size_t *x_end,
 
 		// si no nos pasamos, ejecutamos a la izquierda
 		if (liveleft) {
-			n_range_intersect(lev + 1, x_start_left, x_end_left, sym,
-					start_left, end_left, n_ranges, x_start_left + n_ranges,
-					x_start_right + n_ranges, x_end_left + n_ranges,
-					x_end_right + n_ranges);
-			start_left = start;
-			end_left = C[lev] - 1;
+			n_range_intersect(lev + 1, x_start_left, x_end_left, sym, n_ranges,
+					x_start_left + n_ranges, x_start_right + n_ranges,
+					x_end_left + n_ranges, x_end_right + n_ranges, result);
+//				start_left = start;
+//				end_left = C[lev] - 1;
 		}
 		// si no nos pasamos, ejecutamos a la derecha
 
 		if (liveright) {
 			sym = sym | (1 << lev);
-			end_right = n - 1;
-			start_right = C[lev];
+//				end_right = n - 1;
+//				start_right = C[lev];
 			n_range_intersect(lev + 1, x_start_right, x_end_right, sym,
-					start_right, end_right, n_ranges, x_start_left + n_ranges,
-					x_start_right + n_ranges, x_end_left + n_ranges,
-					x_end_right + n_ranges);
+					n_ranges, x_start_left + n_ranges, x_start_right + n_ranges,
+					x_end_left + n_ranges, x_end_right + n_ranges, result);
 		}
 	}
 	// llegamos a una hoja
 	else {
 		cout << "Adding sym = " << sym << endl;
+		result.push_back(sym);
 	}
 }
 
@@ -396,7 +401,7 @@ void WaveletMatrix::range_report(uint lev, size_t x_start, size_t x_end,
 
 		end_new = bs->rank1(x_end);
 		size_t num_right = (end_new - start_new);
-		size_t num_left = num - num_right; //有待验证！！！！！！！
+		size_t num_left = num - num_right;
 
 		x_end_left = x_end - end_new;
 		// x_end == end_new ? x_end : x_end - end_new + 1;
