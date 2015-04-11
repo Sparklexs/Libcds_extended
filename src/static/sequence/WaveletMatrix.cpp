@@ -31,7 +31,7 @@ WaveletMatrix::WaveletMatrix(const Array &symbols2, BitSequenceBuilder * bmb,
 	uint *symbols = new uint[n];
 	this->am = am;
 	am->use();
-	for (uint i = 0; i < n; i++)
+	for (size_t i = 0; i < n; i++)
 		symbols[i] = am->map(symbols2.getField(i));
 	max_v = max_value(symbols, n);
 	height = bits(max_v);
@@ -39,16 +39,16 @@ WaveletMatrix::WaveletMatrix(const Array &symbols2, BitSequenceBuilder * bmb,
 	OCC = new uint[max_v + 2];
 	for (uint i = 0; i <= max_v + 1; i++)
 		OCC[i] = 0;
-	for (uint i = 0; i < n; i++)
+	for (size_t i = 0; i < n; i++)
 		OCC[symbols[i] + 1]++;
 
-	uint to_add = 0;
+	size_t to_add = 0;
 	for (uint i = 1; i <= max_v + 1; i++)
 		if (OCC[i] == 0)
 			to_add++;
 
 	uint * new_symb = new uint[n + to_add];
-	for (uint i = 0; i < n; i++)
+	for (size_t i = 0; i < n; i++)
 		new_symb[i] = symbols[i];
 	delete[] symbols;
 
@@ -60,7 +60,7 @@ WaveletMatrix::WaveletMatrix(const Array &symbols2, BitSequenceBuilder * bmb,
 			to_add++;
 		}
 
-	uint new_n = n + to_add;
+	size_t new_n = n + to_add;
 	for (uint i = 1; i <= max_v + 1; i++)
 		OCC[i] += OCC[i - 1];
 	this->n = new_n;
@@ -68,7 +68,7 @@ WaveletMatrix::WaveletMatrix(const Array &symbols2, BitSequenceBuilder * bmb,
 	uint **_bm = new uint*[height];
 	for (uint i = 0; i < height; i++) {
 		_bm[i] = new uint[new_n / W + 1];
-		for (uint j = 0; j < new_n / W + 1; j++)
+		for (size_t j = 0; j < new_n / W + 1; j++)
 			_bm[i][j] = 0;
 	}
 
@@ -96,7 +96,7 @@ WaveletMatrix::WaveletMatrix(uint * symbols, size_t n, BitSequenceBuilder * bmb,
 	this->n = n;
 	this->am = am;
 	am->use();
-	for (uint i = 0; i < n; i++)
+	for (size_t i = 0; i < n; i++)
 		symbols[i] = am->map(symbols[i]);
 	max_v = max_value(symbols, n);
 	height = bits(max_v);
@@ -104,16 +104,16 @@ WaveletMatrix::WaveletMatrix(uint * symbols, size_t n, BitSequenceBuilder * bmb,
 	OCC = new uint[max_v + 2];
 	for (uint i = 0; i <= max_v + 1; i++)
 		OCC[i] = 0;
-	for (uint i = 0; i < n; i++)
+	for (size_t i = 0; i < n; i++)
 		OCC[symbols[i] + 1]++;
 
-	uint to_add = 0;
+	size_t to_add = 0;
 	for (uint i = 1; i <= max_v + 1; i++)
 		if (OCC[i] == 0)
 			to_add++;
 
 	uint * new_symb = new uint[n + to_add];
-	for (uint i = 0; i < n; i++)
+	for (size_t i = 0; i < n; i++)
 		new_symb[i] = symbols[i];
 
 	if (deleteSymbols) {
@@ -129,7 +129,7 @@ WaveletMatrix::WaveletMatrix(uint * symbols, size_t n, BitSequenceBuilder * bmb,
 			to_add++;
 		}
 
-	uint new_n = n + to_add;
+	size_t new_n = n + to_add;
 	for (uint i = 1; i <= max_v + 1; i++)
 		OCC[i] += OCC[i - 1];
 	this->n = new_n;
@@ -137,7 +137,7 @@ WaveletMatrix::WaveletMatrix(uint * symbols, size_t n, BitSequenceBuilder * bmb,
 	uint ** _bm = new uint*[height];
 	for (uint i = 0; i < height; i++) {
 		_bm[i] = new uint[new_n / W + 1];
-		for (uint j = 0; j < new_n / W + 1; j++)
+		for (size_t j = 0; j < new_n / W + 1; j++)
 			_bm[i][j] = 0;
 	}
 
@@ -153,7 +153,7 @@ WaveletMatrix::WaveletMatrix(uint * symbols, size_t n, BitSequenceBuilder * bmb,
 	delete[] _bm;
 
 	if (!deleteSymbols)
-		for (uint i = 0; i < n; i++)
+		for (size_t i = 0; i < n; i++)
 			symbols[i] = am->unmap(symbols[i]);
 
 	// delete [] new_symb; // already deleted in build_level()!
@@ -194,7 +194,7 @@ void WaveletMatrix::save(ofstream & fp) const {
 	saveValue(fp, C, height);
 	am->save(fp);
 	for (uint i = 0; i < height; i++)
-		bitstring[i]->save(fp);
+		bitstring[i]->save(fp);// XXX 没有实现
 	// occ->save(fp);
 	saveValue<uint>(fp, OCC, max_v + 2);
 }
@@ -491,7 +491,7 @@ size_t WaveletMatrix::getSize() const {
 			+ sizeof(uint) * (max_v + 2);
 }
 
-void WaveletMatrix::build_level(uint **bm, uint *symbols, uint length,
+void WaveletMatrix::build_level(uint **bm, uint *symbols, size_t length,
 		uint *occs) {
 	uint sigma = max_value(symbols, length);					//记录length长度内最大值
 	uint *new_order = new uint[sigma + 1];
@@ -501,19 +501,19 @@ void WaveletMatrix::build_level(uint **bm, uint *symbols, uint length,
 		 cout << " " << symbols[i];
 		 }*/
 		cout << endl;
-		uint zeroes = 0;
+		size_t zeroes = 0;
 		for (uint i = 0; i < sigma + 1; i++)
 			if (!is_set(i, height - level - 1)) {
 				new_order[i] = 0;
 			} else {
 				new_order[i] = 1;
 			}
-		for (uint i = 0; i < length; i++)
+		for (size_t i = 0; i < length; i++)
 			if (!new_order[symbols[i]])
 				zeroes++;
 		uint *new_symbols = new uint[length];
-		uint new_pos0 = 0, new_pos1 = zeroes;
-		for (uint i = 0; i < length; i++) {
+		size_t new_pos0 = 0, new_pos1 = zeroes;
+		for (size_t i = 0; i < length; i++) {
 			if (!new_order[symbols[i]]) {
 				new_symbols[new_pos0++] = symbols[i];
 				bitclean(bm[level], i);

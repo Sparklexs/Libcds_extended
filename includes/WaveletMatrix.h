@@ -104,7 +104,7 @@ protected:
 	uint set(uint val, uint ind) const;
 
 	/** Recursive function for building the Wavelet Tree. */
-	void build_level(uint **bm, uint *symbols, uint length, uint *occs);
+	void build_level(uint **bm, uint *symbols, size_t length, uint *occs);
 };
 }
 ;
