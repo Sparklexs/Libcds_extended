@@ -101,7 +101,8 @@ namespace cds_utils
 	};
 
 	/** bits needed to represent a number between 0 and n */
-	inline uint bits(uint n) {
+	//n从uint修改成了size_t
+	inline uint bits(size_t n) {
 		uint b = 0;
 		while (n) { b++; n >>= 1; }
 		return b;
@@ -123,6 +124,9 @@ namespace cds_utils
 	/** uints required to represent n integers of e bits each */
 	inline uint uint_len(const uint e, const size_t n) {
 								 //+((unsigned long long)e*n%W>0));
+		return ((unsigned long long)e*n+W-1)/W;
+	}
+	inline size_t long_len(const size_t e, const size_t n){
 		return ((unsigned long long)e*n+W-1)/W;
 	}
 
