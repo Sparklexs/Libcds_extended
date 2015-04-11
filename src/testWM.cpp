@@ -14,6 +14,12 @@ size_t *mystarts = new size_t[NUM] { 0, 4 /*, 223*/};
 size_t *myends = new size_t[NUM] { 3, 12 /*, 227*/};
 
 int main(int argc, char** argv) {
+
+	BitString *bs=new BitString(4655778182);
+	bs->setBit(4294967299);
+	bs->setBit(4294967302);
+	BitSequenceRG *bsrg = new BitSequenceRG(*bs, 2);
+
 	cout << "hello world" << endl;
 	const char* invlist = argv[1];
 	const char* invlistfreq = argv[2];

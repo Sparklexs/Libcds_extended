@@ -54,9 +54,9 @@ namespace cds_static
 		size_t _n = bs.getLength();
 		if(_factor==0) exit(-1);
 		data=new uint[_n/W+1];
-		for(size_t i=0;i<uint_len(_n,1);i++)
+		for(size_t i=0;i<long_len(_n,1);i++)
 			data[i] = bitarray[i];
-		for(size_t i=uint_len(_n,1);i<_n/W+1;i++)
+		for(size_t i=long_len(_n,1);i<_n/W+1;i++)
 			data[i] = 0;
 		//this->owner = true;
 		this->n=_n;
@@ -79,9 +79,9 @@ namespace cds_static
 		cout << _factor << endl; */
 		if(_factor==0) exit(-1);
 		data=new uint[_n/W+1];
-		for(size_t i=0;i<uint_len(_n,1);i++)
+		for(size_t i=0;i<long_len(_n,1);i++)
 			data[i] = bitarray[i];
-		for(size_t i=uint_len(_n,1);i<_n/W+1;i++)
+		for(size_t i=long_len(_n,1);i<_n/W+1;i++)
 			data[i] = 0;
 		//this->owner = true;
 		this->n=_n;
@@ -107,7 +107,7 @@ namespace cds_static
 		size_t num_sblock = n/s;
 								 // +1 pues sumo la pos cero
 		Rs = new uint[num_sblock+5];
-		for(uint i=0;i<num_sblock+5;i++)
+		for(size_t i=0;i<num_sblock+5;i++)
 			Rs[i]=0;
 		size_t j;
 		Rs[0]=0;
@@ -118,8 +118,9 @@ namespace cds_static
 	}
 
 	size_t BitSequenceRG::BuildRankSub(size_t ini, size_t bloques) {
-		uint rank=0,aux;
-		for(uint i=ini;i<ini+bloques;i++) {
+		uint aux;
+		size_t rank;
+		for(size_t i=ini;i<ini+bloques;i++) {
 			if (i < integers) {
 				aux=data[i];
 				rank+=popcount(aux);
@@ -131,11 +132,12 @@ namespace cds_static
 
 	size_t BitSequenceRG::rank1(const size_t i1) const
 	{
-		uint i=(uint)i1;
+		//这里的强制转换有问题
+		size_t i=/*(uint)*/i1;
 		++i;
-		uint resp=Rs[i/s];
-		uint aux=(i/s)*factor;
-		for (uint a=aux;a<i/W;a++)
+		size_t resp=Rs[i/s];
+		size_t aux=(i/s)*factor;
+		for (size_t a=aux;a<i/W;a++)
 			resp+=popcount(data[a]);
 		resp+=popcount(data[i/W]  & ((1<<(i & mask31))-1));
 		return resp;
@@ -177,7 +179,7 @@ namespace cds_static
 
 	size_t BitSequenceRG::SpaceRequirementInBits() const
 	{
-		return uint_len(n,1)*sizeof(uint)*8+(n/s)*sizeof(uint)*8 +sizeof(this)*8;
+		return long_len(n,1)*sizeof(uint)*8+(n/s)*sizeof(uint)*8 +sizeof(this)*8;
 	}
 
 	size_t BitSequenceRG::getSize() const
@@ -196,7 +198,7 @@ namespace cds_static
 		// returns the position of the previous 1 bit before and including start.
 		// tuned to 32 bit machine
 
-		uint i = start >> 5;
+		size_t i = start >> 5;
 		int offset = (start % W);
 		uint aux2 = data[i] & (-1u >> (31-offset));
 
@@ -206,7 +208,7 @@ namespace cds_static
 			else if ((aux2&0xFF00) > 0) return i*W+7+prev_tab[(aux2>>8)&0xFF];
 			else  return i*W+prev_tab[aux2&0xFF]-1;
 		}
-		for (uint k=i-1;;k--) {
+		for (size_t k=i-1;;k--) {
 			aux2=data[k];
 			if (aux2 > 0) {
 				if ((aux2&0xFF000000) > 0) return k*W+23+prev_tab[(aux2>>24)&0xFF];
@@ -218,10 +220,10 @@ namespace cds_static
 		return 0;
 	}
 
-	size_t BitSequenceRG::selectNext1(const size_t k1) const
+	size_t BitSequenceRG::selectNext1(const size_t count) const
 	{
-		uint k = (uint)k1;
-		uint count = k;
+//		uint k = (uint)k1;
+//		uint count = k;
 		uint des,aux2;
 		des=count%W;
 		aux2= data[count/W] >> des;
@@ -232,7 +234,7 @@ namespace cds_static
 			else {return count+24+select_tab[(aux2>>24)&0xff]-1;}
 		}
 
-		for (uint i=count/W+1;i<integers;i++) {
+		for (size_t i=count/W+1;i<integers;i++) {
 			aux2=data[i];
 			if (aux2 > 0) {
 				if ((aux2&0xff) > 0) return i*W+select_tab[aux2&0xff]-1;
@@ -246,17 +248,17 @@ namespace cds_static
 
 	size_t BitSequenceRG::select1(const size_t x1) const
 	{
-		uint x=x1;
+		size_t x=x1;
 		// returns i such that x=rank(i) && rank(i-1)<x or n if that i not exist
 		// first binary search over first level rank structure
 		// then sequential search using popcount over a int
 		// then sequential search using popcount over a char
 		// then sequential search bit a bit
-		if(x>ones) return (uint)(-1);
+		if(x>ones) return -1;
 
 		//binary search over first level rank structure
-		uint l=0, r=n/s;
-		uint mid=(l+r)/2;
+		size_t l=0, r=n/s;
+		size_t mid=(l+r)/2;
 		uint rankmid = Rs[mid];
 		while (l<=r) {
 			if (rankmid<x)
@@ -267,7 +269,7 @@ namespace cds_static
 			rankmid = Rs[mid];
 		}
 		//sequential search using popcount over a int
-		uint left;
+		size_t left;
 		left=mid*factor;
 		x-=rankmid;
 		uint j=data[left];
@@ -310,19 +312,19 @@ namespace cds_static
 
 	size_t BitSequenceRG::select0(const size_t x1) const
 	{
-		uint x = (uint)x1;
+		uint x = /*(uint)*/x1;
 		// returns i such that x=rank_0(i) && rank_0(i-1)<x or n if that i not exist
 		// first binary search over first level rank structure
 		// then sequential search using popcount over a int
 		// then sequential search using popcount over a char
 		// then sequential search bit a bit
-		if(x>n-ones) return (uint)(-1);
+		if(x>n-ones) return -1;
 
 		//binary search over first level rank structure
 		if(x==0) return 0;
-		uint l=0, r=n/s;
-		uint mid=(l+r)/2;
-		uint rankmid = mid*factor*W-Rs[mid];
+		size_t l=0, r=n/s;
+		size_t mid=(l+r)/2;
+		size_t rankmid = mid*factor*W-Rs[mid];
 		while (l<=r) {
 			if (rankmid<x)
 				l = mid+1;
@@ -332,7 +334,7 @@ namespace cds_static
 			rankmid = mid*factor*W-Rs[mid];
 		}
 		//sequential search using popcount over a int
-		uint left;
+		size_t left;
 		left=mid*factor;
 		x-=rankmid;
 		uint j=data[left];
