@@ -23,12 +23,12 @@ OBJECTS=$(UTILS_OBJ) $(STATIC_OBJ)
 
 %.o: %.cpp
 	@echo " [C++] Compiling $<"
-	@$(CPP) $(CPPFLAGS) $(INCL) -c $< -o $@
+	@$(CPP) $(CPPFLAGS) $(INCL) -c $< -o $@ -lboost_serialization
 
 all:  lib testWM
 
 testWM: $(OBJECTS) ./testWM.o
-	@$(CPP) $(CPPFLAGS) $(INCL) -o testWM ./testWM.o $(OBJECTS)
+	@$(CPP) $(CPPFLAGS) $(INCL) -o testWM ./testWM.o $(OBJECTS) -lboost_serialization
 	
 clean:
 	@echo " [CLN] Removing object files"

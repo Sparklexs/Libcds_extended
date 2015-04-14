@@ -10,7 +10,7 @@ doc:
 
 libcompact:
 	@echo " [MSG] Entering directory src"
-	@CPPFLAGS="$(CPPFLAGS)" make --no-print-directory -C src
+	@CPPFLAGS="$(CPPFLAGS)" make --no-print-directory -C src 
 
 tests: libcompact
 #	@echo " [MSG] Entering directory tests"

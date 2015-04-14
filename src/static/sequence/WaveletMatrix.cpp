@@ -422,8 +422,10 @@ void WaveletMatrix::range_report(uint lev, size_t x_start, size_t x_end,
 	} else {
 		if (x_start > x_end)
 			return;
-		result.push_back(am->unmap(sym));
-		cout << "Adding -> " << am->unmap(sym) << " , " << endl;
+		result.push_back(sym);
+		cout << "Adding -> " << sym << " , " << endl;
+//		result.push_back(am->unmap(sym));
+//		cout << "Adding -> " << am->unmap(sym) << " , " << endl;
 
 	}
 }
@@ -441,12 +443,13 @@ uint WaveletMatrix::access(size_t pos) const {
 			pos = optR - 1;
 		}
 	}
-	return am->unmap(ret);
+	return ret;
+//	return am->unmap(ret);
 }
 
 //表示符号symbol到pos位置（起点是0）所发生的次数
 size_t WaveletMatrix::rank(uint symbol, size_t pos) const {
-	symbol = am->map(symbol);
+//	symbol = am->map(symbol);
 	size_t start = 0;
 	for (uint level = 0; level < height; level++) {
 		if (is_set(symbol, height - level - 1)) {
@@ -468,7 +471,7 @@ size_t WaveletMatrix::rank(uint symbol, size_t pos) const {
 }
 
 size_t WaveletMatrix::select(uint symbol, size_t j) const {
-	symbol = am->map(symbol);
+//	symbol = am->map(symbol);
 	size_t pos = OCC[symbol] + j - 1; //(symbol == 0? -1 : occ->select1(symbol)) + j;
 	for (int level = height - 1; level >= 0; level--) {
 		// left

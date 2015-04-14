@@ -62,28 +62,34 @@ int main(int argc, char** argv) {
 	result.pop_back();
 	docfile.close();
 
-	uint *sequence = new uint[length];
-	size_t m2a = 0;
-	//	uint m2a2 = 0;
-	for (int i = 0; i < result.size(); i++) {
-		//		m2a2 += result[i].size();
-		for (int j = 0; j < result[i].size(); j++) {
-			sequence[m2a] = result[i][j];
-			m2a++;
-		}
+	//生成BitSequence
+	BitString *bs=new BitString(length);
+	int m2a=0;
+	for (int i = 0; i < words.size(); i++) {
+		bs->setBit(m2a);
+		m2a = m2a + result[i].size();
 	}
-	Array *A = new Array(sequence, length);
 
-	MapperNone * map = new MapperNone();
+	BitSequenceRG *bsrg = new BitSequenceRG(*bs, 2);
+	ofstream file("test.txt");
+	bsrg->save(file);
 
-//   	BitSequenceBuilder * bsb = new BitSequenceBuilderRRR(50);
-	BitSequenceBuilder * bsb = new BitSequenceBuilderRG(2);
-	WaveletMatrix* seq = new WaveletMatrix(*A, bsb, map);
 
-//	cout << seq->rank(12, 20) << endl;
-//	cout << seq->rank(1, 0) << endl;
-//	seq->range_report_aux(4, 12);
-	seq->n_range_intersect_aux(mystarts, myends, NUM);
-	//return *ds;
-	//ds->DStest();
+//	//生成WM并测试
+//	uint *sequence = new uint[length];
+//	size_t m2a = 0;
+//	for (int i = 0; i < result.size(); i++) {
+//		for (int j = 0; j < result[i].size(); j++) {
+//			sequence[m2a] = result[i][j];
+//			m2a++;
+//		}
+//	}
+//
+//	Array *A = new Array(sequence, length);
+//	MapperNone * map = new MapperNone();
+//	BitSequenceBuilder * bsb = new BitSequenceBuilderRG(2);
+//	WaveletMatrix* seq = new WaveletMatrix(*A, bsb, map);
+//
+//	seq->n_range_intersect_aux(mystarts, myends, NUM);
+
 }
