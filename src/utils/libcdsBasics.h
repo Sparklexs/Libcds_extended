@@ -109,7 +109,7 @@ namespace cds_utils
 	}
 
 	/** reads bit p from e */
-	#define bitget(e,p) ((((e)[(p)/W] >> ((p)%W))) & 1)
+	#define mybitget(e,p) ((((e)[(p)/W] >> ((p)%W))) & 1)
 
 	/** sets bit p in e */
 	inline void bitset(uint * e, size_t p) {

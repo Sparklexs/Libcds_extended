@@ -75,11 +75,11 @@ namespace cds_static
     {
         uint buffer[maxBuffer];
         hc->encode(symbol, buffer, (size_t)0);
-        return bitget(buffer,l);
+        return mybitget(buffer,l);
     }
 
     bool wt_coder_huff::is_set(uint *symbol, uint l) const {
-        return bitget(symbol,l);
+        return mybitget(symbol,l);
     }
 
     bool wt_coder_huff::done(uint symbol, uint l) const
