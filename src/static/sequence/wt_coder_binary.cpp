@@ -58,7 +58,7 @@ namespace cds_static
     }
 
     bool wt_coder_binary::is_set(uint *symbol, uint l) const {
-        if(mybitget(symbol, h - l - 1)) return true;
+        if(bitget(symbol, h - l - 1)) return true;
         return false;
     }
 

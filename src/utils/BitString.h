@@ -68,14 +68,14 @@ namespace cds_utils
 			 */
 			inline bool getBit(const size_t pos) const
 			{
-				return mybitget(data,pos);
+				return bitget(data,pos);
 			}
 
 			/** operator [] for getBit
 			 */
 			inline bool operator[](const size_t pos) const
 			{
-				return mybitget(data,pos);
+				return bitget(data,pos);
 			}
 
 			/** Saves the bitmap to a file

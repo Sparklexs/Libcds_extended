@@ -182,7 +182,7 @@ namespace cds_static
 		mult=0;
 		cont = iniLevel[j]+ini*base_bits[j];
 		readByte = bitread(levels,cont,base_bits[j]);
-		while((!mybitget(((BitSequenceRG *)bS)->data,pos))) {
+		while((!bitget(((BitSequenceRG *)bS)->data,pos))) {
 			rankini = bS->rank1(levelsIndex[j]+ini-1) - rankLevels[j];
 			ini = ini-rankini;
 			partialSum = partialSum+ (readByte<<mult);
@@ -211,7 +211,7 @@ namespace cds_static
 		mult=0;
 		cont = iniLevel[j]+ini*base_bits[j];
 		readByte = bitread(levels,cont,base_bits[j]);
-		while((!mybitget(((BitSequenceRG *)bS)->data,pos))) {
+		while((!bitget(((BitSequenceRG *)bS)->data,pos))) {
 			partialSum = partialSum+ (readByte<<mult);
 			if(next_pos[j]==0) {
 				rankini = bS->rank1(levelsIndex[j]+ini-1) - rankLevels[j];

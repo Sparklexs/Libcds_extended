@@ -74,7 +74,7 @@ namespace cds_static
 		for(uint i=0;i<uint_len(n,1)+1;i++)
 			tmp_seq[i] = 0;
 		for(uint i=0;i<n;i++)
-		if(mybitget(buf,i)) {
+		if(bitget(buf,i)) {
 			__setbit(tmp_seq,i,1);
 			ones++;
 		}

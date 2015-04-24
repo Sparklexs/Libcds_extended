@@ -62,7 +62,7 @@ namespace cds_static
 			assert(baux!=NULL);
 			nbwdptrs = 0;
 			for (i = 0; i < nelems; i++) {
-				if (mybitget(baux,i) == 0) {
+				if (bitget(baux,i) == 0) {
 					nextelem = j = bptr = antbptr = i;
 					aux = 0;
 					bitset(baux, j);
@@ -94,7 +94,7 @@ namespace cds_static
 				baux[i] = 0;
 			nbwdptrs = 0;
 			for (i = 0; i < nelems; i++) {
-				if (mybitget(baux,i) == 0) {
+				if (bitget(baux,i) == 0) {
 					nextelem = j = bptr = antbptr = i;
 					aux = 0;
 					bitset(baux, j);

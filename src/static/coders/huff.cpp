@@ -183,7 +183,7 @@ namespace cds_static
 		pos = 0;
 		d = 0;
 		while (pos < H.fst[d]) {
-			pos = (pos << 1) | mybitget(stream,ptr);
+			pos = (pos << 1) | bitget(stream,ptr);
 			ptr++; d++;
 		}
 		*symb = H.s.symb[H.num[d]+pos-H.fst[d]];
