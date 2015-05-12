@@ -194,7 +194,7 @@ void WaveletMatrix::save(ofstream & fp) const {
 	saveValue(fp, C, height);
 	am->save(fp);
 	for (uint i = 0; i < height; i++)
-		bitstring[i]->save(fp);// XXX 没有实现
+		bitstring[i]->save(fp);	// XXX 没有实现
 	// occ->save(fp);
 	saveValue<uint>(fp, OCC, max_v + 2);
 }
@@ -409,7 +409,7 @@ void WaveletMatrix::range_report(uint lev, size_t x_start, size_t x_end,
 		if (x_start_left <= x_end_left)
 			range_report(lev + 1, x_start_left, x_end_left, sym, num_left,
 					result);
-//		sym =  sym | (1<<(height-lev-1));
+//		sym = sym | (1 << (height - lev - 1));
 		//进入右子树，开始赋值
 		sym = sym | (1 << lev);
 
